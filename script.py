@@ -7,40 +7,6 @@ class Graph:
         self.nodes = defaultdict(lambda:[])
         self.edges = defaultdict(lambda:[])
 
-    def addNode(self, id,randomFunction):
-        self.nodes[id] = Node(randomFunction)
-
-    def addEdge(self, fr,to,feature):
-        if (fr in self.nodes) and (to in self.nodes):
-            self.edges[fr].append(Edge(fr,to,feature)) 
-
-    def removeEdge(self, fr, to):
-        if (fr in self.nodes) and (to in self.nodes):
-            for i in self.edges[fr]:
-                if i.to == to:
-                    self.edges[fr].remove(i)
-
-    def removeNode(self, id):
-        self.nodes.pop(id)
-        if id in self.edges:
-            self.edges.pop(id)
-        l = list(self.edges)
-        for i in l:
-            for j in self.edges[i]:
-                if j.to == id:
-                    if len(self.edges[i]) == 1:
-                        self.edges.pop(i)
-                    else:
-                        self.edges[i].remove(j)
-
-            
-
-    def getNodes(self):
-        return self.nodes
-    
-    def getEdges(self):
-        return self.edges
-
 class Node:
     def __init__(self, randomFunction):
         self.randomFunction = randomFunction
