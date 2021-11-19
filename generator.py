@@ -1,7 +1,7 @@
 import numpy as np
 import math
 # Nombre de site d'extraction de matière première
-MATIERE_PREMIERE = 500
+MATIERE_PREMIERE = 50
 RAW_MATERIAL = 1
 
 nodes = [(i,0, RAW_MATERIAL) for i in range(MATIERE_PREMIERE)]

@@ -1,0 +1,75 @@
+{
+    "nodes": [{
+        "id": "n1",
+        "functions": {
+            "time": "lambda : np.random.normal(100,0.1)",
+            "co2": "lambda : np.random.uniform(3,9)"
+        },
+        "informations": {
+            "city": "Paris",
+            "lat": 109.193,
+            "long": 109.187
+        }
+    }, {
+        "id": "n2",
+        "functions": {
+            "time": "lambda : np.random.normal(10,1)",
+            "co2": "lambda : np.random.uniform(8,10)"
+        },
+        "informations": {
+            "city": "Marseille",
+            "lat": 110.134,
+            "long": 112.878
+        }
+    }, {
+        "id": "n3",
+        "functions": {
+            "time": "lambda : abs(np.random.normal(5,2))",
+            "co2": "lambda : np.random.uniform(1,2)"
+        },
+        "informations": {
+            "city": "Lyon",
+            "lat": 100.134,
+            "long": 142.878
+        }
+    }],
+
+    "edges": [{
+            "id": "e1",
+            "frm": "n1",
+            "to": "n2",
+            "functions": {
+                "time": "lambda : abs(np.random.normal(0,13))",
+                "co2": "lambda : np.random.uniform(19,100)"
+            },
+            "informations": {
+                "vehicule": "Truck"
+            }
+        },
+        {
+            "id": "e2",
+            "frm": "n2",
+            "to": "n3",
+            "functions": {
+                "time": "lambda : abs(np.random.normal(3,5))",
+                "co2": "lambda : np.random.uniform(100,110)"
+            },
+            "informations": {
+                "vehicule": "Truck"
+            }
+        },
+        {
+            "id": "e3",
+            "frm": "n1",
+            "to": "n3",
+            "functions": {
+                "time": "lambda : abs(np.random.normal(10,2))",
+                "co2": "lambda : np.random.uniform(12,13)"
+            },
+            "informations": {
+                "vehicule": "Truck"
+            }
+        }
+
+    ]
+}
