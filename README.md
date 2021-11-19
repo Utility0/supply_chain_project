@@ -9,7 +9,7 @@ A lot of companies doesn't have any informations on their supply chain.  The goa
 
 ### Built with
 
-The project is built with the following technologies:
+The project is built with the following technologies :
 
 - Python
 - Json

@@ -3,7 +3,6 @@ import json
 import re
 
 
-assert False
 
 class Node:
     def __init__(self, id, functions, informations = None) -> None:

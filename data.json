@@ -63,7 +63,7 @@
             "frm": "n1",
             "to": "n3",
             "functions": {
-                "time": "lambda : abs(np.random.normal(10,2))",
+                "time": "lambda : abs(np.random.normal(10,3))",
                 "co2": "lambda : np.random.uniform(12,13)"
             },
             "informations": {
