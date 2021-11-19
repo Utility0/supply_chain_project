@@ -74,9 +74,17 @@ class Graph:
         for i in edges:
             self.addEdge(Edge(i['id'], self.nodeList[i['frm']], self.nodeList[i['to']],{key: eval(value) for key, value in i['functions'].items()}, i['informations']))
 
-    def work(self,nodeId) -> dict:
+    def workNode(self,nodeId) -> dict:
         return self.nodeList[nodeId].genVal()
 
+    def recurciveWork(self,nodeId) -> dict: 
+        if len(self.nodeList[nodeId].previous) == 0:
+            return {'nodeId':nodeId, 'values': self.workNode(nodeId)}
+        else:
+            out = {'nodeId':nodeId, 'values': self.workNode(nodeId), 'from' : []}
+            for edge in self.nodeList[nodeId].previous:
+                out['from'].append({'edgeId': edge.id, 'values':edge.genVal(), 'previous': self.recurciveWork(edge.frm.id)})
+            return out
 
     def __str__(self) -> str:
         a = "Graph :\n"
@@ -92,9 +100,6 @@ class Graph:
         return a
 
 g = Graph()
-# print('Item1 N1: '+str(n1.genVal()))
-# print('Item1 N2: '+str(n2.genVal()))
-# print('Item1 E1: '+str(e1.genVal()))
 g.loadJson('data.json')
 print(g)
-print(g.work('n1'))
+print(g.recurciveWork('n3'))
