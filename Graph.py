@@ -1,4 +1,5 @@
 import json
+import numpy as np
 from Node import Node
 from Edge import Edge
 
