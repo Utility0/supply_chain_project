@@ -33,9 +33,10 @@ size = len(str(NUMBEROFNODE))
 def addZeros(str):
     while(len(str)) != size:
         str= '0'+str
-    return str
+    return 'n'+str
 ids = [str(i+1) for i in range(NUMBEROFNODE)]
 ids = list(map(addZeros,ids))
+
 # List of Nodes ids
 
 #----------------------------------------------#
@@ -43,13 +44,23 @@ ids = list(map(addZeros,ids))
 # Input:  list nodes id
 # Output: dict nodes id: dict functions
 #----------------------------------------------#
+
+FUNCTIONLIST = ["lambda : np.random.normal(0,1)"]
+
 def addFunctions(ids):
-    out = {i:{} for i in ids}
-    for i in out:
-        for j in FUNCTIONSNAMES:
-            pass
+    out = {'id':ids, 'functions':{}}
+    for i in FUNCTIONSNAMES:
+        out['functions'][i] = list(np.random.choice(FUNCTIONLIST, 1))[0]
+    return out
 
+nodeListJSON = list(map(addFunctions, ids))
+print(nodeListJSON)
+#----------------------------------------------#
+#         Build Nodes
+# Input:  dict nodes id: dict functions
+# Output: list Nodes Objects
+#----------------------------------------------#
 
-
+    
 
 #n = Node()

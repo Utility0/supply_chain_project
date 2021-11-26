@@ -7,8 +7,8 @@
         },
         "informations": {
             "city": "Paris",
-            "lat": 109.193,
-            "long": 109.187
+            "lat": "109.193",
+            "long": "109.187"
         }
     }, {
         "id": "n2",
@@ -18,8 +18,8 @@
         },
         "informations": {
             "city": "Marseille",
-            "lat": 110.134,
-            "long": 112.878
+            "lat": "110.134",
+            "long": "112.878"
         }
     }, {
         "id": "n3",
@@ -29,8 +29,8 @@
         },
         "informations": {
             "city": "Lyon",
-            "lat": 100.134,
-            "long": 142.878
+            "lat": "100.134",
+            "long": "142.878"
         }
     }],
 
