@@ -13,6 +13,7 @@ from Node import Node
 parser = argparse.ArgumentParser(description='Create example JSON for supply chain project', prog="Supply Chain Project")
 parser.add_argument("-n","--numberOfNode", help="get the numbers of nodes for the JSON file", type = int, required=True)
 parser.add_argument("-f","--functions", nargs="+", help="get the names of the functions", type = str, required=True)
+parser.add_argument("-o", "--output", help = "JSON output file path", type = str, required=True)
 args = parser.parse_args()
 
 #----------------------------------------------#
@@ -21,6 +22,7 @@ args = parser.parse_args()
 
 NUMBEROFNODE = args.numberOfNode
 FUNCTIONSNAMES = args.functions
+OUTPUTPATH = args.output
 NumberOfFunctions = len(FUNCTIONSNAMES)
 
 
@@ -42,7 +44,7 @@ ids = list(map(addZeros,ids))
 #----------------------------------------------#
 #         Create The Functions
 # Input:  list nodes id
-# Output: dict nodes id: dict functions
+# Output: list Nodes JSON Objects
 #----------------------------------------------#
 
 FUNCTIONLIST = ["lambda : np.random.normal(0,1)"]
@@ -55,12 +57,16 @@ def addFunctions(ids):
 
 nodeListJSON = list(map(addFunctions, ids))
 print(nodeListJSON)
-#----------------------------------------------#
-#         Build Nodes
-# Input:  dict nodes id: dict functions
-# Output: list Nodes Objects
-#----------------------------------------------#
 
+
+#----------------------------------------------#
+#         Build Output
+# Input:  list Nodes JSON Objects
+# Output: JSON
+#----------------------------------------------#
+OUT = {}
+OUT['nodes'] = nodeListJSON
     
 
-#n = Node()
+with open(OUTPUTPATH, 'w') as fp:
+    json.dump(OUT, fp)
