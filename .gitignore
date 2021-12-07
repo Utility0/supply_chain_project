@@ -3,6 +3,5 @@ bin
 include
 lib
 lib64
-raw_material_data
 share
 pyvenv.cfg
