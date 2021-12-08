@@ -1,8 +1,8 @@
 class Edge:
     def __init__(self,frm, to, functions) -> None:
-        self.id = str(frm.id)+'-'+str(to.id)
+        self.uuid = str(frm.uuid)+'-'+str(to.uuid)
         self.frm = frm
         self.to = to
 
     def __str__(self) -> str:
-        return str(self.id)
+        return str(self.uuid)
