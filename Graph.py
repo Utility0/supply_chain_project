@@ -1,6 +1,9 @@
 from Edge import Edge
 from Node import Node
 import numpy as np
+import json
+import networkx as nx
+import matplotlib.pyplot as plt
 
 RAW = 1
 TRANSFO = 2
@@ -12,9 +15,9 @@ SALES = 4
 import uuid
 
 class Graph:
-    def __init__(self, nodeDict={}, edgeList=[]) -> None:
+    def __init__(self, nodeDict={}, edgeDict={}) -> None:
         self.nodeDict = nodeDict
-        self.edgeList = edgeList
+        self.edgeDict = edgeDict
 
     def genGraph(self, size, couchesTransfo, functionsList):
         # Gen Raw Material Point
@@ -59,20 +62,79 @@ class Graph:
         n = Node(functionsList).setType(type)
         self.nodeDict[n.uuid] = n
         return n.uuid
+    
+    def addNode(self,node):
+        self.nodeDict[node.uuid] = node
 
     def addEdge(self, frm,to,functionsList):
         edge = Edge(frm,to,functionsList)
         to.addPrevious(frm.uuid)
         frm.addNext(to.uuid)
-        self.edgeList.append(edge)
+        self.edgeDict[str(frm.uuid)+"-"+str(to.uuid)] = edge
+
+    def recurciveWork(self,node) -> dict: 
+        out = node.genVal()
+        if node.type == RAW:
+            return out
+        else:
+            out["from"] = list()
+            for previous in node.previous:
+                edge = self.edgeDict[previous+"-"+node.uuid]
+                outEdge = edge.genVal()
+                outEdge["from"] = self.recurciveWork(edge.frm)
+                out["from"].append(outEdge)
+            return out
+
+
+    def genData(self,outputSize) -> list:
+        salespoints=[i for i in self.nodeDict.values() if i.type==SALES]
+        salespoints =np.random.choice(salespoints,outputSize)
+        out = list(map(self.recurciveWork,salespoints))
+        return(out)
 
     def jsonFormat(self) -> str:
-        out = dict({'nodes':[],'edges':[]})
-        for i in self.edgeList:
-            out['edges'].append(i.jsonFormat())
+        out = dict({"nodes":[],"edges":[]})
+        for i in self.edgeDict:
+            out["edges"].append(self.edgeDict[i].jsonFormat())
         for i in self.nodeDict:
-            out['nodes'].append(self.nodeDict[i].jsonFormat())
+            out["nodes"].append(self.nodeDict[i].jsonFormat())
         return out
+
+    def storeJson(self,path) -> None:
+        with open(path, "w") as fp:
+            json.dump(self.jsonFormat(), fp)
+
+    def loadJson(self,file) -> None:
+        with open(file, "r") as f:
+            data = json.load(f)
+        nodes = data["nodes"]
+        edges = data["edges"]
+        for i in nodes:
+            self.addNode(Node({key: value for key, value in i["functions"].items()},i["type"],i["uuid"] ,i["previous"],i["next"], i["info"]))
+        for i in edges:
+            self.addEdge(self.nodeDict[i["frm"]], self.nodeDict[i["to"]],{key: value for key, value in i["functions"].items()})
+
+    def showGraph(self,path) -> None:
+        nxG = nx.DiGraph()
+        for i in list(self.edgeDict.values())[::-1]:
+            nxG.add_edge(i.frm.uuid,i.to.uuid)
+        
+        color_map = []
+        for idNode in nxG:
+            node = self.nodeDict[idNode]
+            if node.type == RAW:
+                color_map.append('blue')
+            elif node.type == TRANSFO:
+                color_map.append('green')
+            elif node.type == HOUSEWARE:
+                color_map.append('red')
+            elif node.type == SALES:
+                color_map.append('yellow')
+            else:
+                color_map.append('black')     
+        nx.draw(nxG, node_color=color_map,alpha=.8, with_labels=False)
+        plt.savefig(path)
+
 
     def __str__(self) -> str:
         a = "Graph :\n"
@@ -82,10 +144,8 @@ class Graph:
             a += str(self.nodeDict[i])+"\n"
         a += "-"*20+"\n"
         a += "Edges : "+"\n"
-        for i in self.edgeList:
-            a += str(i)+"\n"
+        for i in self.edgeDict:
+            a += str(self.edgeDict[i])+"\n"
         a += "-"*20+"\n"
         return a
 
-
-        return

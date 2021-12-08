@@ -1,17 +1,38 @@
 import numpy as np
-import cmd
-import argparse
+import json
 from Graph import Graph
-from Edge import Edge
-from Node import Node
 
 # Init Graph
 g = Graph()
 
 
-# Generate
-g.genGraph(5,2,['time','co2'])
+# # Generate
+g.genGraph(5,2,["time","co2"])
 
-print(g.jsonFormat())
+# # Store Graph as Json
+g.storeJson("Graph.json")
 
-print(g)
+# Load Graph from Json
+#g.loadJson("Graph.json")
+
+# Display Graph networkx
+g.showGraph("graph.png")
+
+# Generate Data
+# data  = g.genData(100)
+
+#Store Result As Json
+# def storeJson(path) -> None:
+#     with open(path, "w") as fp:
+#         json.dump({'results':data}, fp)
+
+# storeJson('data.json')
+
+# Store Result as Neo4J
+#
+#
+# Todo
+
+# Print Results
+# print(data)
+
