@@ -61,7 +61,7 @@ class Graph:
         return n.uuid
 
     def addEdge(self, frm,to):
-        edge = Edge(frm,to,{'time' :lambda: np.random.uniform(0,1)})
+        edge = Edge(frm,to,{'time' :'lambda: np.random.uniform(0,1)'})
         to.addPrevious(frm.uuid)
         frm.addNext(to.uuid)
         self.edgeList.append(edge)

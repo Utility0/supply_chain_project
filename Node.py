@@ -12,7 +12,7 @@ class Node:
         else:
             self.type = -1
             self.uuid= uuid.uuid1().hex
-            self.functions = {'time' :lambda: np.random.uniform(0,1)}
+            self.functions = {'time' :'lambda: np.random.uniform(0,1)'}
             self.previous = []
             self.next = []
 
@@ -27,5 +27,15 @@ class Node:
     def setType(self,type):
         self.type = type
         return self
+
+    def jsonFormat(self):
+        return {
+            'type': str(self.type),
+            'id': str(self.id),
+            'functions': str(self.functions),
+            'previous': str(self.previous),
+            'next': str(self.next)
+        }
+    
     def __str__(self) -> str:
         return str(self.uuid)+' '+str(self.type)+'\nPrevious : '+str(self.previous)+'\nNext : '+str(self.next)
