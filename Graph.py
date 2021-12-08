@@ -10,6 +10,7 @@ TRANSFO = 2
 HOUSEWARE = 3
 SALES = 4
 
+ranks = {}
 
 
 import uuid
@@ -26,13 +27,15 @@ class Graph:
         raw = []
         for _ in range(size):
             idNewNode = self.genNode(RAW,functionsList)
+            ranks[idNewNode] = 0
             prevLayer.append(idNewNode)
             raw.append(idNewNode)
         # Gen Transformation Layer:
-        for _ in range(couchesTransfo):
+        for l in range(1,couchesTransfo+1):
             tmp = []
             for _ in range(size*5):
                 idNewNode = self.genNode(TRANSFO,functionsList)
+                ranks[idNewNode] = l
                 fromNodes = np.random.choice(prevLayer,np.random.randint(2,5+1), replace=False)
                 for i in fromNodes:
                     self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList)
@@ -43,6 +46,7 @@ class Graph:
         stocks = []
         for _ in range(size*20):
             idNewNode = self.genNode(HOUSEWARE,functionsList)
+            ranks[idNewNode] = couchesTransfo+1
             fromNodes = np.random.choice(transform,np.random.randint(1,3+1), replace=False)
             for i in fromNodes:
                 self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList)
@@ -51,6 +55,7 @@ class Graph:
         salesPoints = []
         for _ in range(size*50):
             idNewNode = self.genNode(SALES,functionsList)
+            ranks[idNewNode] = couchesTransfo+2
             fromNodes = np.random.choice(stocks,np.random.randint(1,5+1), replace=False)
             for i in fromNodes:
                 self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList)
@@ -116,6 +121,8 @@ class Graph:
 
     def showGraph(self,path) -> None:
         nxG = nx.DiGraph()
+        for i in list(self.nodeDict.values())[::-1]:
+            nxG.add_node(i.uuid, subset=ranks[i.uuid])
         for i in list(self.edgeDict.values())[::-1]:
             nxG.add_edge(i.frm.uuid,i.to.uuid)
         
@@ -131,9 +138,12 @@ class Graph:
             elif node.type == SALES:
                 color_map.append('yellow')
             else:
-                color_map.append('black')     
-        nx.draw(nxG, node_color=color_map,alpha=.8, with_labels=False)
-        plt.savefig(path)
+                color_map.append('black')   
+        pos = nx.multipartite_layout(nxG)  
+        nx.draw(nxG, pos,node_color=color_map,node_size=100,alpha=.8, with_labels=False)
+        plt.savefig("linear"+path)
+        plt.close()
+
 
 
     def __str__(self) -> str:

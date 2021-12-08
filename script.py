@@ -7,7 +7,7 @@ g = Graph()
 
 
 # # Generate
-g.genGraph(5,2,["time","co2"])
+g.genGraph(15,3,["time","co2"])
 
 # # Store Graph as Json
 g.storeJson("Graph.json")
