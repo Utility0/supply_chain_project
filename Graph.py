@@ -1,3 +1,4 @@
+from numpy.random.mtrand import normal
 from Edge import Edge
 from Node import Node
 import numpy as np
@@ -20,13 +21,12 @@ class Graph:
         self.nodeDict = nodeDict
         self.edgeDict = edgeDict
 
-    def genGraph(self, size, couchesTransfo, functionsList):
+    def genGraph(self, size, couchesTransfo, functionsList, probaBadFunction):
         # Gen Raw Material Point
-        
         prevLayer = []
         raw = []
         for _ in range(size):
-            idNewNode = self.genNode(RAW,functionsList)
+            idNewNode = self.genNode(RAW,functionsList, probaBadFunction)
             ranks[idNewNode] = 0
             prevLayer.append(idNewNode)
             raw.append(idNewNode)
@@ -34,45 +34,47 @@ class Graph:
         for l in range(1,couchesTransfo+1):
             tmp = []
             for _ in range(size*5):
-                idNewNode = self.genNode(TRANSFO,functionsList)
+                idNewNode = self.genNode(TRANSFO,functionsList, probaBadFunction)
                 ranks[idNewNode] = l
                 fromNodes = np.random.choice(prevLayer,np.random.randint(2,5+1), replace=False)
                 for i in fromNodes:
-                    self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList)
+                    self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList, probaBadFunction)
                 tmp.append(idNewNode)
             prevLayer += tmp
         transform = [i for i in prevLayer if i not in raw]
         # Gen Stockage Layer:
         stocks = []
         for _ in range(size*20):
-            idNewNode = self.genNode(HOUSEWARE,functionsList)
+            idNewNode = self.genNode(HOUSEWARE,functionsList, probaBadFunction)
             ranks[idNewNode] = couchesTransfo+1
             fromNodes = np.random.choice(transform,np.random.randint(1,3+1), replace=False)
             for i in fromNodes:
-                self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList)
+                self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList, probaBadFunction)
             stocks.append(idNewNode)
         # Gen Sales Point Layer:
         salesPoints = []
         for _ in range(size*50):
-            idNewNode = self.genNode(SALES,functionsList)
+            idNewNode = self.genNode(SALES,functionsList, probaBadFunction)
             ranks[idNewNode] = couchesTransfo+2
             fromNodes = np.random.choice(stocks,np.random.randint(1,5+1), replace=False)
             for i in fromNodes:
-                self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList)
+                self.addEdge(self.nodeDict[i],self.nodeDict[idNewNode],functionsList, probaBadFunction)
             salesPoints.append(idNewNode)
         
+ 
+ 
 
-                
-    def genNode(self,type,functionsList):
-        n = Node(functionsList).setType(type)
+
+    def genNode(self,type,functionsList, probaBadFunction):
+        n = Node(functionsList, probaBadFunction).setType(type)
         self.nodeDict[n.uuid] = n
         return n.uuid
     
     def addNode(self,node):
         self.nodeDict[node.uuid] = node
 
-    def addEdge(self, frm,to,functionsList):
-        edge = Edge(frm,to,functionsList)
+    def addEdge(self, frm,to,functionsList, probaBadFunction):
+        edge = Edge(frm,to,functionsList, probaBadFunction)
         to.addPrevious(frm.uuid)
         frm.addNext(to.uuid)
         self.edgeDict[str(frm.uuid)+"-"+str(to.uuid)] = edge
@@ -117,7 +119,7 @@ class Graph:
         for i in nodes:
             self.addNode(Node({key: value for key, value in i["functions"].items()},i["type"],i["uuid"] ,i["previous"],i["next"], i["info"]))
         for i in edges:
-            self.addEdge(self.nodeDict[i["frm"]], self.nodeDict[i["to"]],{key: value for key, value in i["functions"].items()})
+            self.addEdge(self.nodeDict[i["frm"]], self.nodeDict[i["to"]],{key: value for key, value in i["functions"].items()},None)
 
     def showGraph(self,path) -> None:
         nxG = nx.DiGraph()

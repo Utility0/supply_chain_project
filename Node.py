@@ -1,5 +1,6 @@
 import uuid
 import numpy as np
+import random
 
 class Node:
     def __init__(self,functions, *arg) -> None:
@@ -16,9 +17,9 @@ class Node:
             elif isinstance(functions,list):
                 self.functions=dict()
                 for i in functions:
-                    self.functions[i]=self.genFunction()
+                    self.functions[i]=self.genFunction(arg[0])
             else:
-                self.functions={functions:self.genFunction()}
+                self.functions={functions:self.genFunction(arg[0])}
             self.type = -1
             self.uuid= uuid.uuid1().hex
             self.previous = []
@@ -26,9 +27,23 @@ class Node:
             self.info = {}
     
     
-    def genFunction(self) -> str:
-        return "lambda: np.random.uniform(9,99)"
-
+    def genFunction(self, proba) -> str:
+        UNIFORM = 1
+        NORMAL = 2
+        CHI = 3
+        type = np.random.choice([UNIFORM,NORMAL,CHI],1)
+        if type == UNIFORM:
+            a = np.random.randint(1,90)
+            b = np.random.randint(1,10)
+            form = f"lambda: np.random.choice([abs(np.random.uniform({a},{a+b})),-abs(np.random.uniform({a+b},{a+2*b})),-abs(np.random.uniform({a-b},{a}))],1,p=[{1-proba},{proba/2},{proba/2}])"
+        if type == NORMAL:
+            µ = round(np.random.uniform(20,80),2)
+            s = round(np.random.random()*5,2)
+            form = f"lambda: np.random.choice([abs(np.random.normal({µ},{s})), -abs(np.random.normal({µ-5-4*s},{s/4})), -abs(np.random.normal({µ+5+4*s},{s/4}))],1,p=[{1-proba},{proba/2},{proba/2}])"
+        if type == CHI:
+            p =round(np.random.uniform(1,10),2)
+            form = f"lambda: np.random.choice([abs(np.random.chisquare({p})), -abs(np.random.chisquare({p/8})), -abs(np.random.chisquare({2*p}))],1,p=[{1-proba},{proba/2},{proba/2}])"
+        return form
 
     def addPrevious(self, prev):
         self.previous.append(prev)
@@ -47,7 +62,7 @@ class Node:
         out["uuid"] = self.uuid
         out["val"]= dict()
         for i in self.functions:
-            out["val"][i] = round(eval(self.functions[i])(),3)
+            out["val"][i] = round(float(eval(self.functions[i])()),3)
         return out    
 
     def jsonFormat(self) -> str:
