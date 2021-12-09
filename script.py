@@ -17,18 +17,18 @@ g.storeJson("Graph.json")
 # print('Loaded')
 
 # Display Graph networkx
-#g.showGraph("graph.png")
+g.showGraph("graph.png")
 
 # Generate Data
-data  = g.genData(100)
-print('Gen')
+# data  = g.genData(100)
+# print('Gen')
 
 #Store Result As Json
-def storeJson(path) -> None:
-    with open(path, "w") as fp:
-        json.dump({'results':data}, fp)
+# def storeJson(path) -> None:
+#     with open(path, "w") as fp:
+#         json.dump({'results':data}, fp)
 
-storeJson('data.json')
+# storeJson('data.json')
 
 # Store Result as Neo4J
 #

@@ -122,29 +122,31 @@ class Graph:
             self.addEdge(self.nodeDict[i["frm"]], self.nodeDict[i["to"]],{key: value for key, value in i["functions"].items()},None)
 
     def showGraph(self,path) -> None:
-        nxG = nx.DiGraph()
+        plt.figure(figsize=(16,9))
+        nxG = nx.Graph()
         for i in list(self.nodeDict.values())[::-1]:
             nxG.add_node(i.uuid, subset=ranks[i.uuid])
         for i in list(self.edgeDict.values())[::-1]:
             nxG.add_edge(i.frm.uuid,i.to.uuid)
-        
         color_map = []
         for idNode in nxG:
             node = self.nodeDict[idNode]
             if node.type == RAW:
-                color_map.append('blue')
+                color_map.append('#1b85b8')
             elif node.type == TRANSFO:
-                color_map.append('green')
+                color_map.append('#f24457')
             elif node.type == HOUSEWARE:
-                color_map.append('red')
+                color_map.append('#fed95c')
             elif node.type == SALES:
-                color_map.append('yellow')
+                color_map.append('#90a0db')
             else:
-                color_map.append('black')   
-        pos = nx.multipartite_layout(nxG)  
-        nx.draw(nxG, pos,node_color=color_map,node_size=100,alpha=.8, with_labels=False)
-        plt.savefig("linear"+path)
+                color_map.append('black')
+        pos = nx.multipartite_layout(nxG)
+        nx.draw(nxG, pos, node_color=color_map, node_size=1000, alpha=0.8, with_labels=False, width=0.04, edge_color='black')
+        plt.savefig("linear"+path, transparent=True)
         plt.close()
+
+
 
 
 
