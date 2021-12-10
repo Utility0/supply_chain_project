@@ -26,7 +26,6 @@ class Node:
             self.next = []
             self.info = {}
     
-    
     def genFunction(self, proba) -> str:
         UNIFORM = 1
         NORMAL = 2

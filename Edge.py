@@ -1,19 +1,17 @@
 import numpy as np
-import random
 class Edge:
     def __init__(self,frm, to, functions, probaBadFunction) -> None:
         self.uuid = str(frm.uuid)+"-"+str(to.uuid)
         self.frm = frm
         self.to = to
-        if isinstance(functions,dict):
+        if isinstance(functions, dict):
             self.functions = functions
-        elif isinstance(functions,list):
-            self.functions=dict()
+        elif isinstance(functions, list):
+            self.functions = dict()
             for i in functions:
-                self.functions[i]=self.genFunction(probaBadFunction)
+                self.functions[i] = self.genFunction(probaBadFunction)
         else:
-            self.functions={functions:self.genFunction(probaBadFunction)}
-
+            self.functions = {functions:self.genFunction(probaBadFunction)}
 
     def jsonFormat(self) -> str:
         return {
@@ -21,7 +19,6 @@ class Edge:
             "to": self.to.uuid,
             "functions": self.functions,
         }
-
     
     def genFunction(self, proba) -> str:
         UNIFORM = 1
@@ -37,16 +34,16 @@ class Edge:
             s = round(np.random.random()*5,2)
             form = f"lambda: np.random.choice([abs(np.random.normal({µ},{s})), -abs(np.random.normal({µ-5-4*s},{s/4})), -abs(np.random.normal({µ+5+4*s},{s/4}))],1,p=[{1-proba},{proba/2},{proba/2}])"
         if type == CHI:
-            p =round(np.random.uniform(1,10),2)
+            p = round(np.random.uniform(1,10),2)
             form = f"lambda: np.random.choice([abs(np.random.chisquare({p})), -abs(np.random.chisquare({p/8})), -abs(np.random.chisquare({2*p}))],1,p=[{1-proba},{proba/2},{proba/2}])"
         return form
 
     def genVal(self) -> dict:
         out = dict()
         out["uuid"] = self.uuid
-        out["val"]= dict()
+        out["val"] = dict()
         for i in self.functions:
-            out["val"][i] = round(float(eval(self.functions[i])()),3)
+            out["val"][i] = round(float(eval(self.functions[i])()), 3)
         out["from"] = self.frm.genVal()
         return out   
 
