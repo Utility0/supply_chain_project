@@ -10,14 +10,14 @@ g = Graph()
 g.genGraph(15,3,["time","co2"],0.01)
 
 # Store Graph as Json
-g.storeJson("Graph.json")
+g.storeJson("data/Graph.json")
 
 # # Load Graph from Json
 # g.loadJson("Graph.json")
 # print('Loaded')
 
 # Display Graph networkx
-g.showGraph("graph.png")
+g.showGraph("images/graph.png")
 
 # Generate Data
 # data  = g.genData(100)

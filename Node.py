@@ -4,6 +4,16 @@ import random
 
 class Node:
     def __init__(self,functions, *arg) -> None:
+        """Initializes the node
+        
+        Args:
+            functions (dict): The functions to use.
+            *arg (list): The previous nodes.
+        
+        Returns:
+            None
+        """
+
         if len(arg) == 5:
             self.type = arg[0]
             self.uuid = arg[1]
@@ -27,6 +37,15 @@ class Node:
             self.info = {}
     
     def genFunction(self, proba) -> str:
+        """Generates a function depending on the type of node
+        
+        Args:
+            proba (float): The probability of a bad function.
+        
+        Returns:
+            str: The generated function.
+        """
+
         UNIFORM = 1
         NORMAL = 2
         CHI = 3
@@ -45,18 +64,54 @@ class Node:
         return form
 
     def addPrevious(self, prev):
+        """Adds a previous node
+        
+        Args:
+            prev (str): The previous node.
+            
+        Returns:
+            None
+        """
+
         self.previous.append(prev)
         return self
     
     def addNext(self,next):
+        """Adds a next node
+        
+        Args:
+            next (str): The next node.
+        
+        Returns:
+            None
+        """
+
         self.next.append(next)
         return self
 
     def setType(self,type):
+        """Sets the type of the node
+        
+        Args:
+            type (int): The type of the node.
+            
+        Returns:
+            None
+        """
+
         self.type = type
         return self
 
     def genVal(self) -> dict:
+        """Generates the value of the node
+        
+        Args:
+            None
+        
+        Returns:
+            dict: The generated value.
+        """
+
         out = dict()
         out["uuid"] = self.uuid
         out["val"]= dict()
@@ -65,6 +120,15 @@ class Node:
         return out    
 
     def jsonFormat(self) -> str:
+        """Returns the node in json format
+        
+        Args:
+            None
+        
+        Returns:
+            str: The node in json format.
+        """
+
         return {
             "type": self.type,
             "uuid": self.uuid,
@@ -75,4 +139,13 @@ class Node:
         }
     
     def __str__(self) -> str:
+        """Returns the node in string format
+        
+        Args:
+            None
+        
+        Returns:
+            str: The node in string format.
+        """
+        
         return str(self.uuid)+" "+str(self.type)+"\nPrevious : "+str(self.previous)+"\nNext : "+str(self.next)

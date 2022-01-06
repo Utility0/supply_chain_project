@@ -1,6 +1,18 @@
 import numpy as np
 class Edge:
     def __init__(self,frm, to, functions, probaBadFunction) -> None:
+        """Initializes the edge
+        
+        Args:
+            frm (Node): The node from which the edge is coming.
+            to (Node): The node to which the edge is going.
+            functions (dict): The functions to use.
+            probaBadFunction (float): The probability of a bad function.
+        
+        Returns:
+            None
+        """
+
         self.uuid = str(frm.uuid)+"-"+str(to.uuid)
         self.frm = frm
         self.to = to
@@ -14,6 +26,12 @@ class Edge:
             self.functions = {functions:self.genFunction(probaBadFunction)}
 
     def jsonFormat(self) -> str:
+        """Returns the json format of the edge
+        
+        Returns:
+            str: The json format of the edge
+        """
+
         return {
             "frm": self.frm.uuid,
             "to": self.to.uuid,
@@ -21,6 +39,15 @@ class Edge:
         }
     
     def genFunction(self, proba) -> str:
+        """Generates a function
+        
+        Args:
+            proba (float): The probability of a bad function.
+            
+        Returns:
+            str: The generated function
+        """
+
         UNIFORM = 1
         NORMAL = 2
         CHI = 3
@@ -39,6 +66,12 @@ class Edge:
         return form
 
     def genVal(self) -> dict:
+        """Generates the value of the edge
+        
+        Returns:
+            dict: The generated value
+        """
+
         out = dict()
         out["uuid"] = self.uuid
         out["val"] = dict()
@@ -48,4 +81,10 @@ class Edge:
         return out   
 
     def __str__(self) -> str:
+        """Returns the string representation of the edge
+        
+        Returns:
+            str: The string representation of the edge
+        """
+        
         return str(self.uuid)
