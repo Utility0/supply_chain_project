@@ -5,6 +5,7 @@ import numpy as np
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
+from neo4j import GraphDatabase
 
 RAW = 1
 TRANSFO = 2
@@ -245,8 +246,26 @@ class Graph:
 
         pos = nx.multipartite_layout(nxG) # Set horizontal layout
         nx.draw(nxG, pos, node_color=color_map, node_size=1000, alpha=0.8, with_labels=False, width=0.04, edge_color='black')
-        plt.savefig("images/linear" + path, transparent=True) # Save plot to png
+        plt.savefig(path, transparent=True) # Save plot to png
         plt.close()
+    
+    
+    def toNeo4J(self,uri,name,password) -> str:
+        """Save the supplyChain on neo4J
+    
+        Returns:
+            bool: Succes of the export
+        """
+        #driver = GraphDatabase.driver(uri, auth=(name, password))
+        for i in self.nodeDict:
+            uuid=i
+            print(self.nodeDict[i])
+        querry="""
+        create(n:Node{id:})
+        """
+        
+           
+        pass
 
     def __str__(self) -> str:
         """Generates the string representation of the graph
