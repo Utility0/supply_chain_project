@@ -250,7 +250,7 @@ class Graph:
         plt.close()
     
     
-    def toNeo4J(self,uri,name,password) -> str:
+    def modelToNeo4J(self,uri,name,password) -> str:
         """Save the supplyChain on neo4J
     
         Returns:
@@ -265,6 +265,9 @@ class Graph:
         """
         
            
+        pass
+
+    def dataToNeo4J(self,number,uri,name,password) -> str:
         pass
 
     def __str__(self) -> str:
