@@ -1,5 +1,9 @@
+from unittest import result
+import uuid
+from neo4j import Neo4jDriver, Query
 from numpy.random.mtrand import normal
 from Edge import Edge
+from Neo4JObject import Neo4JObject
 from Node import Node
 import numpy as np
 import json
@@ -247,6 +251,89 @@ class Graph:
         nx.draw(nxG, pos, node_color=color_map, node_size=1000, alpha=0.8, with_labels=False, width=0.04, edge_color='black')
         plt.savefig("images/linear" + path, transparent=True) # Save plot to png
         plt.close()
+
+    def graphToNeo4J(self,uri,user,password,runQuery):
+        if runQuery:
+            n4j = Neo4JObject(uri,user,password)
+        query = ""
+        ## SAVE NODES
+        ## CREATE (uuid:Graph {uuid : 'val',type : 'val',time:'val',co2:'val'})
+        for i in self.nodeDict:
+            node = self.nodeDict[i]
+            param = dict()
+            param["functions"] = node.functions
+            param["info"] = node.info
+            query += "CREATE (n"+node.uuid+":Graph"
+            query += ' {uuid : \''+node.uuid+"\',"
+            query += 'type : \''+str(node.type)+"\',"
+            for i in node.functions:
+                query += i+":\'"+node.functions[i]+"\',"
+            query = query[:-1]
+            query += "})\n"
+        ## SAVE EDGES
+        ## MATCH (n), (m) WHERE n.name = "Allison" AND m.name = "Emil" CREATE (n)-[:KNOWS {keys}]->(m)
+        for i in self.edgeDict:
+            edge = self.edgeDict[i]
+            query += "CREATE"
+            query += "(n{})-[:GraphLink ".format(edge.frm.uuid)
+            query += "{"
+            for i in edge.functions:
+                query += i+":\'"+edge.functions[i]+"\',"
+            query = query[:-1]
+            query += '}]->('
+            query += "n{})\n".format(edge.to.uuid)
+        if runQuery:
+            n4j.run(query)
+        return query
+
+    def dataToNeo4J(self,number,uri,user,password,runQuery):
+        query = ""
+        salespoints = [i for i in self.nodeDict.values() if i.type==SALES]
+        salespoints = np.random.choice(salespoints, number)
+        if runQuery:
+            n4j = Neo4JObject(uri,user,password)
+        for i in salespoints:
+            extractuuid = uuid.uuid1().hex
+            inituuid = uuid.uuid1().hex
+            query += "CREATE ({}:DataNode".format(inituuid)+" {"
+            query += "uuid:\'"+i.uuid+"\',"
+            query += "type:\'"+str(i.type)+"\',"
+            query += "extractid:\'"+extractuuid+"\',"
+            for j in i.genVal()['val']:
+                query += j+":\'"+str(i.genVal()['val'][j])+"\',"
+            query = query[:-1]
+            query += "})\n"
+            query += self.getQuery(inituuid,i.uuid,extractuuid)
+            if runQuery:
+                n4j.run(query)
+        return query
+    
+    def getQuery(self,neo4jId, nodeId, extractId):
+        query = ""
+        for i in self.nodeDict[nodeId].previous:
+            neouuid = uuid.uuid1().hex
+            node = self.nodeDict[i]
+            # CREATE NODE
+            query += "CREATE (" +neouuid+":DataNode {"
+            query += "uuid:\'"+node.uuid+"\',"
+            query += "type:\'"+str(node.type)+"\',"
+            query += "extractid:\'"+extractId+"\',"
+            for j in node.genVal()['val']:
+                query += j+":\'"+str(node.genVal()['val'][j])+"\',"
+            query = query[:-1]
+            query += "})\n"
+            # CREATE EDGE
+            edge = self.edgeDict[i+"-"+nodeId]
+            query += "CREATE ("+neo4jId+") -[:DataLink {"
+            query += "uuid:\'"+edge.uuid+"\',"
+            for j in edge.genVal()['val']:
+                query += j+":\'"+str(node.genVal()['val'][j])+"\',"
+            query = query[:-1]
+            query += "}] -> ("+neouuid+") \n"
+
+            # Add Recurcive
+            query += self.getQuery(neouuid,node.uuid,extractId)
+        return query
 
     def __str__(self) -> str:
         """Generates the string representation of the graph
