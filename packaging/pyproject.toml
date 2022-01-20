@@ -1,0 +1,8 @@
+[build-system]
+requires = [
+    "numpy",
+    "matplotlib",
+    "networkx",
+    "neo4j"
+]
+build-backend = "setuptools.build_meta"
